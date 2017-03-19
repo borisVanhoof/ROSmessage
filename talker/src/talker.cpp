@@ -1,35 +1,36 @@
-#include "ros/ros.h"
-#include "std_msgs/String.h"
+#include <ros/ros.h>
+#include <image_transport/image_transport.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <cv_bridge/cv_bridge.h>
 
-#include <sstream>
+using namespace std;
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "talker");
+  ros::init(argc, argv, "image_publisher");
 
   ros::NodeHandle n;
 
-  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+  image_transport::ImageTransport it(n);
+  image_transport::Publisher pub = it.advertise("camera/image", 1);
+  cv::Mat image = cv::imread("test.jpg", CV_LOAD_IMAGE_COLOR);
+  if(!image.data)
+  {
+	cout << "could not open test.jpg" << endl;
+	return -1;
+  }
 
-  ros::Rate loop_rate(10);
+  sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 
-  int count = 0;
+  ros::Rate loop_rate(30);
+
   while (ros::ok())
   {
-    std_msgs::String msg;
-
-    std::stringstream ss;
-    ss << "hello world " << count;
-    msg.data = ss.str();
-
-    ROS_INFO("%s", msg.data.c_str());
-
-    chatter_pub.publish(msg);
+    pub.publish(msg);
 
     ros::spinOnce();
 
     loop_rate.sleep();
-    ++count;
   }
 
 
