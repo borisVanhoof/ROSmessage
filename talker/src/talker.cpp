@@ -3,15 +3,25 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+#include <geometry_msgs/Pose.h>
+
 using namespace std;
+
+void callBackFunction(const geometry_msgs::Pose& msg)
+{
+  ROS_INFO("I heard: [%f %f %f]\n", msg.position.x, msg.position.y, msg.position.z);
+}
 
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "image_publisher");
 
-  ros::NodeHandle n;
+  ros::NodeHandle np; //publisher
+  ros::NodeHandle nl; //listener
 
-  image_transport::ImageTransport it(n);
+  ros::Subscriber sub = nl.subscribe("aruco/pose", 5, callBackFunction);
+
+  image_transport::ImageTransport it(np);
   image_transport::Publisher pub = it.advertise("camera/image", 1);
   cv::Mat image = cv::imread("test.jpg", CV_LOAD_IMAGE_COLOR);
   if(!image.data)

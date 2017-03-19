@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   cv_bridge
   image_transport
+  geometry_msgs
 )
 
 FIND_PACKAGE(OpenCV REQUIRED)
