@@ -3,11 +3,12 @@
 In this example I want to experiment with ROS publisher and subscriber. I aim to receive images and send out coordinates.
 
 ## so far
-I am able to send and receive images with a publisher/subscriber.
-I am able to return dummy Pose.
+I subscribe to an image, find the aruco codes and publish the x y z coordinates.
 
-## next step
-Add the aruco algorithm.
+## to do
+Make a message like:
+* ID
+* x,y,z
 
 ## sources
 * http://wiki.ros.org/image_transport/Tutorials/PublishingImages
